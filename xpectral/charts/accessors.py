@@ -74,124 +74,238 @@ class BokehAccessor(Figure):
     # -------------------------------------------
     # Glyph methods with both x and y parameters
     @glyph_method(glyphs.AnnularWedge)
-    def annular_wedge(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def annular_wedge(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/annular_wedge.html
+        """
 
     @glyph_method(glyphs.Annulus)
-    def annulus(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def annulus(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/annulus.html
+        """
 
     @glyph_method(glyphs.Arc)
-    def arc(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def arc(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/arc.html
+        """
 
     @glyph_method(glyphs.Block)
-    def block(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def block(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/block.html
+        """
 
     @glyph_method(glyphs.Ellipse)
-    def ellipse(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def ellipse(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/ellipse.html
+        """
 
     @glyph_method(glyphs.Image)
-    def image(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def image(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/image.html
+        """
 
     @glyph_method(glyphs.ImageRGBA)
-    def image_rgba(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def image_rgba(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/image_rgba.html
+        """
 
     @glyph_method(glyphs.ImageStack)
-    def image_stack(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def image_stack(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/image_stack.html
+        """
 
     @glyph_method(glyphs.ImageURL)
-    def image_url(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def image_url(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/image_url.html
+        """
 
     @glyph_method(glyphs.Line)
-    def line(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def line(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/line.html
+        """
 
     @glyph_method(glyphs.MathMLGlyph)
-    def mathml_glyph(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def mathml_glyph(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/math_ml.html
+        """
 
     @glyph_method(glyphs.Ngon)
-    def ngon(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def ngon(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/ngon.html
+        """
 
     @glyph_method(glyphs.Patch)
-    def patch(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def patch(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/patch.html
+        """
 
     @glyph_method(glyphs.Ray)
-    def ray(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def ray(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/ray.html
+        """
 
     @glyph_method(glyphs.Rect)
-    def rect(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def rect(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/rect.html
+        """
 
     @glyph_method(glyphs.Scatter)
-    def scatter(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def scatter(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/scatter.html
+        """
 
     @glyph_method(glyphs.Step)
-    def step(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def step(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/step.html
+        """
 
     @glyph_method(glyphs.TeXGlyph)
-    def tex_glyph(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def tex_glyph(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/tex.html
+        """
 
     @glyph_method(glyphs.Text)
-    def text(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def text(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/text.html
+        """
 
     @glyph_method(glyphs.Wedge)
-    def wedge(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def wedge(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/wedge.html
+        """
 
     # ----------------------------------------------------
     # Vertical glyph methods (have parameter x but not y)
     @glyph_method(glyphs.VArea)
-    def varea(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def varea(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/varea.html
+        """
 
     @glyph_method(glyphs.VAreaStep)
-    def varea_step(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def varea_step(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/varea_step.html
+        """
 
     @glyph_method(glyphs.VBar)
-    def vbar(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def vbar(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/vbar.html
+        """
 
     @glyph_method(glyphs.VSpan)
-    def vspan(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def vspan(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/vspan.html
+        """
 
     # ------------------------------------------------------
     # Horizontal glyph methods (have parameter y but not x)
     @glyph_method(glyphs.HArea)
-    def harea(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def harea(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/harea.html
+        """
 
     @glyph_method(glyphs.HAreaStep)
-    def harea_step(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def harea_step(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/harea_step.html
+        """
 
     @glyph_method(glyphs.HBar)
-    def hbar(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def hbar(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hbar.html
+        """
 
     @glyph_method(glyphs.HSpan)
-    def hspan(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def hspan(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hspan.html
+        """
 
     # -----------------------------------------
     # Glyph methods without x nor y parameters
     @glyph_method(glyphs.Bezier)
-    def bezier(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def bezier(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/bezier.html
+        """
 
     @glyph_method(glyphs.HStrip)
-    def hstrip(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def hstrip(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hstrip.html
+        """
 
     @glyph_method(glyphs.HexTile)
-    def hextile(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def hextile(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hex_tile.html
+        """
 
     @glyph_method(glyphs.MultiLine)
-    def multi_line(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def multi_line(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/multi_line.html
+        """
 
     @glyph_method(glyphs.MultiPolygons)
-    def multipolygons(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def multipolygons(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/multi_polygons.html
+        """
 
     @glyph_method(glyphs.Patches)
-    def patches(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def patches(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/patches.html
+        """
 
     @glyph_method(glyphs.Quad)
-    def quad(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def quad(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/quad.html
+        """
 
     @glyph_method(glyphs.Quadratic)
-    def quadratic(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def quadratic(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/quadratic.html
+        """
 
     @glyph_method(glyphs.Segment)
-    def segment(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def segment(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/segment.html
+        """
 
     @glyph_method(glyphs.VStrip)
-    def vstrip(self, *args: Any, **kwargs: Any) -> GlyphRenderer: ...
+    def vstrip(self, *args: Any, **kwargs: Any) -> GlyphRenderer:
+        """See Also:
+        https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/vstrip.html
+        """
 
     # -----------------------------------------
     # Glyph stack methods
@@ -211,6 +325,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/harea.html
         """
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="x1", spec1="x2", **kwargs):
@@ -231,6 +348,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hbar.html
         """
         result = []
         for kwarg in double_stack(
@@ -254,6 +374,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/line.html
         """
         result = []
         for kwarg in single_stack(stackers=stackers, spec="x", **kwargs):
@@ -276,6 +399,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/varea.html
         """
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="y1", spec1="y2", **kwargs):
@@ -296,6 +422,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/vbar.html
         """
         result = []
         for kwarg in double_stack(
@@ -319,6 +448,9 @@ class BokehAccessor(Figure):
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/line.html
         """
         result = []
         for kwarg in single_stack(stackers=stackers, spec="y", **kwargs):

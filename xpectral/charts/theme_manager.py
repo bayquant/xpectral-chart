@@ -6,6 +6,7 @@
 
 # Standard library imports
 from __future__ import annotations
+from typing import Any
 
 # Other imports
 from bokeh.io import curdoc
@@ -18,6 +19,16 @@ from bokeh.themes import Theme
 
 DEFAULT_THEME = "light_minimal"
 
+# Structural/UX defaults merged into every theme below (built-in and custom).
+# Kept intentionally free of colors/fonts so it never overrides a theme's own
+# visual identity — add more cross-theme defaults here as the need arises.
+BASE_ATTRS: dict[str, dict[str, Any]] = {
+    "Toolbar": {
+        "logo": None,
+        "autohide": True,
+    },
+}
+
 THEMES = {
     "caliber": built_in_themes["caliber"],
     "carbon": built_in_themes["carbon"],
@@ -28,7 +39,6 @@ THEMES = {
     "ocean": Theme(
         json={
             "attrs": {
-                "Toolbar": {"logo": None},
                 "Plot": {
                     "background_fill_color": "#e8e8ea",
                     "border_fill_color": "#e8e8ea",
@@ -151,6 +161,58 @@ class ThemeAccessor:
 # Global accessor for app/notebook code.
 theme = ThemeAccessor(default=DEFAULT_THEME)
 
+
+def register_theme(name: str, attrs: dict[str, dict[str, Any]]) -> Theme:
+    """Register a custom theme and add it to `THEMES`.
+
+    Args:
+        name: Key to register the theme under. Must not already be a key
+            in `THEMES`.
+        attrs: Bokeh theme `attrs` mapping (model class name -> dict of
+            property overrides), the same shape passed to
+            ``Theme(json={"attrs": ...})``. Merged on top of `BASE_ATTRS`
+            so the new theme automatically inherits the shared toolbar
+            defaults; entries in `attrs` win on conflicts.
+
+    Returns:
+        The constructed `Theme`, already added to `THEMES` under `name`.
+
+    Raises:
+        ValueError: If `name` is already a key in `THEMES`.
+    """
+    if name in THEMES:
+        raise ValueError(
+            f"Theme '{name}' is already registered. Options: {list(THEMES)}"
+        )
+    new_theme = Theme(json={"attrs": _merge_attrs(BASE_ATTRS, attrs)})
+    THEMES[name] = new_theme
+    return new_theme
+
+
 # -----------------------------------------------------------------------------
 # Private API
 # -----------------------------------------------------------------------------
+
+
+def _merge_attrs(
+    base: dict[str, dict[str, Any]], override: dict[str, dict[str, Any]]
+) -> dict[str, dict[str, Any]]:
+    # Shallow-merge two Bokeh theme `attrs` dicts (class name -> prop dict);
+    # `override` wins per-property, matching Theme._for_class's own
+    # base-then-subclass merge order.
+    merged = {class_name: dict(props) for class_name, props in base.items()}
+    for class_name, props in override.items():
+        merged.setdefault(class_name, {}).update(props)
+    return merged
+
+
+def _attrs_of(theme: Theme) -> dict[str, dict[str, Any]]:
+    # Theme has no public getter for the attrs it was built with; this is
+    # the only place that reaches into Bokeh's private `_json` field (see
+    # bokeh.themes.theme.Theme.__init__, which stores the constructor's
+    # `json` arg verbatim as `self._json`).
+    return theme._json.get("attrs", {})
+
+
+for _name, _theme in THEMES.items():
+    THEMES[_name] = Theme(json={"attrs": _merge_attrs(BASE_ATTRS, _attrs_of(_theme))})

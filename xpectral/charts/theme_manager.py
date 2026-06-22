@@ -16,6 +16,8 @@ from bokeh.themes import Theme
 # Globals and constants
 # -----------------------------------------------------------------------------
 
+DEFAULT_THEME = "light_minimal"
+
 THEMES = {
     "caliber": built_in_themes["caliber"],
     "carbon": built_in_themes["carbon"],
@@ -107,20 +109,39 @@ THEMES = {
 class ThemeAccessor:
     """Small accessor around a named collection of Bokeh themes."""
 
-    def __init__(self, default: str = "light") -> None:
+    def __init__(self, default: str = DEFAULT_THEME) -> None:
+        """Initialize the accessor with a starting theme.
+
+        Args:
+            default: Name of the theme to select initially. Must be a key
+                in ``THEMES``.
+
+        Raises:
+            ValueError: If `default` is not a key in `THEMES`.
+        """
         if default not in THEMES:
             raise ValueError(f"Unknown default theme '{default}'")
         self._name = default
 
     @property
     def name(self) -> str:
+        """Name of the currently selected theme."""
         return self._name
 
     @property
-    def current(self):
+    def current(self) -> Theme:
+        """The currently selected Bokeh `Theme` object."""
         return THEMES[self._name]
 
     def set(self, name: str) -> None:
+        """Switch the active theme and apply it to the current document.
+
+        Args:
+            name: Name of the theme to activate. Must be a key in `THEMES`.
+
+        Raises:
+            ValueError: If `name` is not a key in `THEMES`.
+        """
         if name not in THEMES:
             raise ValueError(f"Unknown theme '{name}'. Options: {list(THEMES)}")
         self._name = name
@@ -128,7 +149,7 @@ class ThemeAccessor:
 
 
 # Global accessor for app/notebook code.
-theme = ThemeAccessor(default="light_minimal")
+theme = ThemeAccessor(default=DEFAULT_THEME)
 
 # -----------------------------------------------------------------------------
 # Private API

@@ -5,6 +5,9 @@
 # Standard library imports
 from __future__ import annotations
 import warnings
+from datetime import date
+from datetime import datetime
+from datetime import time
 from typing import Any
 from typing import Callable
 from typing import Sequence
@@ -467,7 +470,8 @@ class PolarsBokehAccessor(BokehAccessor):
     @property
     def source(self) -> ColumnDataSource:
         if not hasattr(self, "_source"):
-            self._source = ColumnDataSource(self._df.to_dict(as_series=False))
+            data = _coerce_unsafe_dates(self._df.to_dict(as_series=False))
+            self._source = ColumnDataSource(data)
         return self._source
 
 
@@ -480,13 +484,36 @@ class PandasBokehAccessor(BokehAccessor):
     @property
     def source(self) -> ColumnDataSource:
         if not hasattr(self, "_source"):
-            self._source = ColumnDataSource(self._df.to_dict(orient="list"))
+            data = _coerce_unsafe_dates(self._df.to_dict(orient="list"))
+            self._source = ColumnDataSource(data)
         return self._source
 
 
 # -----------------------------------------------------------------------------
 # Private API
 # -----------------------------------------------------------------------------
+
+
+def _coerce_unsafe_dates(data: dict[str, list[Any]]) -> dict[str, list[Any]]:
+    # Bokeh's serializer encodes bare `datetime.date` values as ISO date
+    # strings rather than millisecond timestamps (unlike `datetime.datetime`,
+    # which it converts to numbers), which silently breaks glyph positioning
+    # on any numeric axis (see bokeh.core.serialization.Serializer._encode_other).
+    # Promote bare dates to midnight datetimes so columns are numeric-safe
+    # regardless of source: Polars `Date` columns, or pandas `object`-dtype
+    # columns of raw `date`s (e.g. from `.dt.date`).
+    for column, values in data.items():
+        if any(isinstance(v, date) and not isinstance(v, datetime) for v in values):
+            data[column] = [
+                (
+                    datetime.combine(v, time.min)
+                    if isinstance(v, date) and not isinstance(v, datetime)
+                    else v
+                )
+                for v in values
+            ]
+    return data
+
 
 # Polars' NameSpace descriptor caches the accessor on the DataFrame instance
 # via setattr, causing the same BokehAccessor to be returned on repeated

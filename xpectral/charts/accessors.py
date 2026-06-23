@@ -313,7 +313,7 @@ class BokehAccessor(Figure):
     # -----------------------------------------
     # Glyph stack methods
     def harea_stack(
-        self, stackers: Sequence[str], **kwargs: Any
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
     ) -> list[GlyphRenderer]:
         """Stack horizontal filled areas between consecutive stacker columns.
 
@@ -322,9 +322,13 @@ class BokehAccessor(Figure):
         producing one filled band per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``y``.
             **kwargs: Visual properties forwarded to :meth:`harea`
-                (e.g. ``y``, ``fill_color``, ``fill_alpha``).
+                (e.g. ``y``, ``fill_color``, ``fill_alpha``). If ``y`` is
+                not given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -332,12 +336,17 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/harea.html
         """
+        if "y" not in kwargs:
+            kwargs["y"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="x1", spec1="x2", **kwargs):
             result.append(self.harea(**kwarg))
         return result
 
-    def hbar_stack(self, stackers: Sequence[str], **kwargs: Any) -> list[GlyphRenderer]:
+    def hbar_stack(
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
+    ) -> list[GlyphRenderer]:
         """Stack horizontal bars between consecutive stacker columns.
 
         Each stacker column is cumulated left-to-right: the running total
@@ -345,9 +354,13 @@ class BokehAccessor(Figure):
         producing one bar segment per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``y``.
             **kwargs: Visual properties forwarded to :meth:`hbar`
-                (e.g. ``y``, ``height``, ``fill_color``).
+                (e.g. ``y``, ``height``, ``fill_color``). If ``y`` is not
+                given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -355,6 +368,9 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/hbar.html
         """
+        if "y" not in kwargs:
+            kwargs["y"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
         result = []
         for kwarg in double_stack(
             stackers=stackers, spec0="left", spec1="right", **kwargs
@@ -363,7 +379,7 @@ class BokehAccessor(Figure):
         return result
 
     def hline_stack(
-        self, stackers: Sequence[str], **kwargs: Any
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
     ) -> list[GlyphRenderer]:
         """Stack horizontal lines at the cumulative sum of each stacker column.
 
@@ -371,9 +387,13 @@ class BokehAccessor(Figure):
         is used as the ``x`` coordinate, producing one line per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``y``.
             **kwargs: Visual properties forwarded to :meth:`line`
-                (e.g. ``y``, ``line_color``, ``line_width``).
+                (e.g. ``y``, ``line_color``, ``line_width``). If ``y`` is
+                not given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -381,13 +401,16 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/line.html
         """
+        if "y" not in kwargs:
+            kwargs["y"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
         result = []
         for kwarg in single_stack(stackers=stackers, spec="x", **kwargs):
             result.append(self.line(**kwarg))
         return result
 
     def varea_stack(
-        self, stackers: Sequence[str], **kwargs: Any
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
     ) -> list[GlyphRenderer]:
         """Stack vertical filled areas between consecutive stacker columns.
 
@@ -396,9 +419,13 @@ class BokehAccessor(Figure):
         producing one filled band per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``x``.
             **kwargs: Visual properties forwarded to :meth:`varea`
-                (e.g. ``x``, ``fill_color``, ``fill_alpha``).
+                (e.g. ``x``, ``fill_color``, ``fill_alpha``). If ``x`` is
+                not given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -406,12 +433,17 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/varea.html
         """
+        if "x" not in kwargs:
+            kwargs["x"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="y1", spec1="y2", **kwargs):
             result.append(self.varea(**kwarg))
         return result
 
-    def vbar_stack(self, stackers: Sequence[str], **kwargs: Any) -> list[GlyphRenderer]:
+    def vbar_stack(
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
+    ) -> list[GlyphRenderer]:
         """Stack vertical bars between consecutive stacker columns.
 
         Each stacker column is cumulated bottom-to-top: the running total
@@ -419,9 +451,13 @@ class BokehAccessor(Figure):
         producing one bar segment per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``x``.
             **kwargs: Visual properties forwarded to :meth:`vbar`
-                (e.g. ``x``, ``width``, ``fill_color``).
+                (e.g. ``x``, ``width``, ``fill_color``). If ``x`` is not
+                given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -429,6 +465,9 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/vbar.html
         """
+        if "x" not in kwargs:
+            kwargs["x"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
         result = []
         for kwarg in double_stack(
             stackers=stackers, spec0="bottom", spec1="top", **kwargs
@@ -437,7 +476,7 @@ class BokehAccessor(Figure):
         return result
 
     def vline_stack(
-        self, stackers: Sequence[str], **kwargs: Any
+        self, stackers: Sequence[str] | None = None, **kwargs: Any
     ) -> list[GlyphRenderer]:
         """Stack vertical lines at the cumulative sum of each stacker column.
 
@@ -445,9 +484,13 @@ class BokehAccessor(Figure):
         is used as the ``y`` coordinate, producing one line per stacker.
 
         Args:
-            stackers: Column names to stack in order.
+            stackers: Column names to stack in order. If not given, stacks
+                every numeric column of the underlying DataFrame except
+                whichever column is passed as ``x``.
             **kwargs: Visual properties forwarded to :meth:`line`
-                (e.g. ``x``, ``line_color``, ``line_width``).
+                (e.g. ``x``, ``line_color``, ``line_width``). If ``x`` is
+                not given, defaults to a 0-based range index, mirroring
+                ``pandas.DataFrame.plot()``.
 
         Returns:
             One :class:`~bokeh.models.renderers.GlyphRenderer` per stacker.
@@ -455,6 +498,9 @@ class BokehAccessor(Figure):
         See Also:
             https://docs.bokeh.org/en/latest/docs/reference/models/glyphs/line.html
         """
+        if "x" not in kwargs:
+            kwargs["x"] = _ensure_range_index(self.source)
+        stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
         result = []
         for kwarg in single_stack(stackers=stackers, spec="y", **kwargs):
             result.append(self.line(**kwarg))
@@ -513,6 +559,42 @@ def _coerce_unsafe_dates(data: dict[str, list[Any]]) -> dict[str, list[Any]]:
                 for v in values
             ]
     return data
+
+
+def _numeric_columns(df: pd.DataFrame | pl.DataFrame) -> list[str]:
+    # Mirrors pandas.DataFrame.plot()'s default column selection for
+    # plotting: numeric dtypes only (bool, string, date/datetime, etc.
+    # are excluded).
+    if isinstance(df, pl.DataFrame):
+        return [name for name, dtype in df.schema.items() if dtype.is_numeric()]
+    return list(df.select_dtypes(include="number").columns)
+
+
+def _resolve_stackers(
+    df: pd.DataFrame | pl.DataFrame, stackers: Sequence[str] | None, coordinate: Any
+) -> Sequence[str]:
+    # When `stackers` isn't given, stack every numeric column except the
+    # one explicitly used as the shared coordinate (x for vertical stacks,
+    # y for horizontal stacks), mirroring pandas.DataFrame.plot()'s default
+    # of plotting every numeric column.
+    if stackers is not None:
+        return stackers
+    numeric = _numeric_columns(df)
+    if isinstance(coordinate, str):
+        numeric = [c for c in numeric if c != coordinate]
+    return numeric
+
+
+def _ensure_range_index(source: ColumnDataSource) -> str:
+    # Mirrors pandas.DataFrame.plot()'s default of using a 0-based
+    # RangeIndex as the coordinate when none is given. Stored under a name
+    # distinct from the 1-based "x"/"y" index that glyph_method (in
+    # _decorators.py) synthesizes for individual glyph calls, so the two
+    # default-index conventions never collide on a shared source.
+    if "__range_index" not in source.data:
+        n = len(next(iter(source.data.values()), ()))
+        source.data["__range_index"] = list(range(n))
+    return "__range_index"
 
 
 # Polars' NameSpace descriptor caches the accessor on the DataFrame instance

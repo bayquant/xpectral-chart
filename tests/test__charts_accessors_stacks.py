@@ -35,14 +35,55 @@ class TestAutoStackers(unittest.TestCase):
         renderers = fig.vline_stack()
 
         self.assertEqual([r.name for r in renderers], ["a", "b"])
-        self.assertEqual(fig.source.data["__range_index"], [0, 1, 2])
-        self.assertEqual(renderers[0].glyph.x, "__range_index")
+        self.assertEqual(fig.source.data["x"], [0, 1, 2])
+        self.assertEqual(renderers[0].glyph.x, "x")
 
     def test_horizontal_family_defaults_and_excludes_y(self) -> None:
         fig = self.df.bokeh()
         renderers = fig.hbar_stack(y="step")
         self.assertEqual([r.name for r in renderers], ["path_0", "path_1"])
         self.assertEqual(renderers[0].glyph.y, "step")
+
+    def test_auto_legend_derives_from_stacker_names(self) -> None:
+        fig = self.df.bokeh()
+        renderers = fig.vline_stack(x="step")
+        legend_labels = [
+            r.data_source.data.get("legend_label") or r.glyph.name for r in renderers
+        ]
+        # legend_label is distributed per-stacker by single_stack; check via the renderer name
+        # and that a Legend annotation was created with 2 entries.
+        self.assertEqual(len(fig.legend[0].items), 2)
+        self.assertEqual(fig.legend[0].items[0].label["value"], "path_0")
+        self.assertEqual(fig.legend[0].items[1].label["value"], "path_1")
+
+    def test_legend_false_suppresses_legend(self) -> None:
+        fig = self.df.bokeh()
+        fig.vline_stack(x="step", legend=False)
+        self.assertEqual(len(fig.legend), 0)
+
+    def test_explicit_legend_label_overrides_auto(self) -> None:
+        fig = self.df.bokeh()
+        fig.vline_stack(x="step", legend_label=["Series A", "Series B"])
+        self.assertEqual(fig.legend[0].items[0].label["value"], "Series A")
+        self.assertEqual(fig.legend[0].items[1].label["value"], "Series B")
+
+    def test_decorator_auto_legend_from_y_column(self) -> None:
+        fig = self.df.bokeh()
+        fig.line(x="step", y="path_0")
+        self.assertEqual(len(fig.legend[0].items), 1)
+        self.assertEqual(fig.legend[0].items[0].label["value"], "path_0")
+
+    def test_decorator_legend_false_suppresses_legend(self) -> None:
+        fig = self.df.bokeh()
+        fig.line(x="step", y="path_0", legend=False)
+        self.assertEqual(len(fig.legend), 0)
+
+    def test_decorator_no_legend_for_synthetic_index(self) -> None:
+        df = pl.DataFrame({"path_0": [1.0, 2.0, 3.0]})
+        fig = df.bokeh()
+        fig.line(y="path_0")
+        # x defaults to synthetic "x" column — should still label from y
+        self.assertEqual(fig.legend[0].items[0].label["value"], "path_0")
 
     def test_pandas_auto_stackers_parity(self) -> None:
         df = pd.DataFrame(

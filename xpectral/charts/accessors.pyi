@@ -178,6 +178,7 @@ class BokehAccessor(Figure):
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[AnnularWedgeArgs],
     ) -> GlyphRenderer[glyphs.AnnularWedge]: ...
 
@@ -186,6 +187,7 @@ class BokehAccessor(Figure):
         y: NumberArg = ...,
         inner_radius: DistanceArg = ...,
         outer_radius: DistanceArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[AnnulusArgs],
     ) -> GlyphRenderer[glyphs.Annulus]: ...
 
@@ -196,6 +198,7 @@ class BokehAccessor(Figure):
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ArcArgs],
     ) -> GlyphRenderer[glyphs.Arc]: ...
 
@@ -204,6 +207,7 @@ class BokehAccessor(Figure):
         y: NumberArg = ...,
         width: DistanceArg = ...,
         height: DistanceArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[BlockArgs],
     ) -> GlyphRenderer[glyphs.Block]: ...
 
@@ -213,6 +217,7 @@ class BokehAccessor(Figure):
         width: DistanceArg = ...,
         height: DistanceArg = ...,
         angle: AngleArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[EllipseArgs],
     ) -> GlyphRenderer[glyphs.Ellipse]: ...
 
@@ -223,6 +228,7 @@ class BokehAccessor(Figure):
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ImageArgs],
     ) -> GlyphRenderer[glyphs.Image]: ...
 
@@ -233,6 +239,7 @@ class BokehAccessor(Figure):
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ImageRGBAArgs],
     ) -> GlyphRenderer[glyphs.ImageRGBA]: ...
 
@@ -243,6 +250,7 @@ class BokehAccessor(Figure):
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ImageStackArgs],
     ) -> GlyphRenderer[glyphs.ImageStack]: ...
 
@@ -254,12 +262,14 @@ class BokehAccessor(Figure):
         h: NullDistanceArg = ...,
         angle: AngleArg = ...,
         dilate: bool = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ImageURLArgs],
     ) -> GlyphRenderer[glyphs.ImageURL]: ...
 
     def line(self,
         x: NumberArg = ...,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[LineArgs],
     ) -> GlyphRenderer[glyphs.Line]: ...
 
@@ -270,6 +280,7 @@ class BokehAccessor(Figure):
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[MathMLArgs],
     ) -> GlyphRenderer[glyphs.MathMLGlyph]: ...
 
@@ -277,12 +288,14 @@ class BokehAccessor(Figure):
         x: NumberArg = ...,
         y: NumberArg = ...,
         radius: DistanceArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[NgonArgs],
     ) -> GlyphRenderer[glyphs.Ngon]: ...
 
     def patch(self,
         x: NumberArg = ...,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[PatchArgs],
     ) -> GlyphRenderer[glyphs.Patch]: ...
 
@@ -291,6 +304,7 @@ class BokehAccessor(Figure):
         y: NumberArg = ...,
         length: DistanceArg = ...,
         angle: AngleArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[RayArgs],
     ) -> GlyphRenderer[glyphs.Ray]: ...
 
@@ -301,6 +315,7 @@ class BokehAccessor(Figure):
         height: DistanceArg = ...,
         angle: AngleArg = ...,
         dilate: bool = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[RectArgs],
     ) -> GlyphRenderer[glyphs.Rect]: ...
 
@@ -310,12 +325,14 @@ class BokehAccessor(Figure):
         size: SizeArg = ...,
         angle: AngleArg = ...,
         marker: MarkerArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[ScatterArgs],
     ) -> GlyphRenderer[glyphs.Scatter]: ...
 
     def step(self,
         x: NumberArg = ...,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[StepArgs],
     ) -> GlyphRenderer[glyphs.Step]: ...
 
@@ -326,6 +343,7 @@ class BokehAccessor(Figure):
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[TeXArgs],
     ) -> GlyphRenderer[glyphs.TeXGlyph]: ...
 
@@ -336,6 +354,7 @@ class BokehAccessor(Figure):
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[TextArgs],
     ) -> GlyphRenderer[glyphs.Text]: ...
 
@@ -346,6 +365,7 @@ class BokehAccessor(Figure):
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[WedgeArgs],
     ) -> GlyphRenderer[glyphs.Wedge]: ...
 
@@ -355,6 +375,7 @@ class BokehAccessor(Figure):
         x: NumberArg = ...,
         y1: NumberArg = ...,
         y2: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[VAreaArgs],
     ) -> GlyphRenderer[glyphs.VArea]: ...
 
@@ -362,6 +383,7 @@ class BokehAccessor(Figure):
         x: NumberArg = ...,
         y1: NumberArg = ...,
         y2: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[VAreaStepArgs],
     ) -> GlyphRenderer[glyphs.VAreaStep]: ...
 
@@ -370,11 +392,13 @@ class BokehAccessor(Figure):
         width: DistanceArg = ...,
         top: NumberArg = ...,
         bottom: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[VBarArgs],
     ) -> GlyphRenderer[glyphs.VBar]: ...
 
     def vspan(self,
         x: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[VSpanArgs],
     ) -> GlyphRenderer[glyphs.VSpan]: ...
 
@@ -384,6 +408,7 @@ class BokehAccessor(Figure):
         x1: NumberArg = ...,
         x2: NumberArg = ...,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HAreaArgs],
     ) -> GlyphRenderer[glyphs.HArea]: ...
 
@@ -391,6 +416,7 @@ class BokehAccessor(Figure):
         x1: NumberArg = ...,
         x2: NumberArg = ...,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HAreaStepArgs],
     ) -> GlyphRenderer[glyphs.HAreaStep]: ...
 
@@ -399,11 +425,13 @@ class BokehAccessor(Figure):
         height: DistanceArg = ...,
         right: NumberArg = ...,
         left: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HBarArgs],
     ) -> GlyphRenderer[glyphs.HBar]: ...
 
     def hspan(self,
         y: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HSpanArgs],
     ) -> GlyphRenderer[glyphs.HSpan]: ...
 
@@ -418,36 +446,42 @@ class BokehAccessor(Figure):
         cy0: NumberArg = ...,
         cx1: NumberArg = ...,
         cy1: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[BezierArgs],
     ) -> GlyphRenderer[glyphs.Bezier]: ...
 
     def hstrip(self,
         y0: NumberArg = ...,
         y1: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HStripArgs],
     ) -> GlyphRenderer[glyphs.HStrip]: ...
 
     def hextile(self,
         q: NumberArg = ...,
         r: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[HexTileArgs],
     ) -> GlyphRenderer[glyphs.HexTile]: ...
 
     def multi_line(self,
         xs: Number1dArg = ...,
         ys: Number1dArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[MultiLineArgs],
     ) -> GlyphRenderer[glyphs.MultiLine]: ...
 
     def multipolygons(self,
         xs: Number3dArg = ...,
         ys: Number3dArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[MultiPolygonsArgs],
     ) -> GlyphRenderer[glyphs.MultiPolygons]: ...
 
     def patches(self,
         xs: Number1dArg = ...,
         ys: Number1dArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[PatchesArgs],
     ) -> GlyphRenderer[glyphs.Patches]: ...
 
@@ -456,6 +490,7 @@ class BokehAccessor(Figure):
         right: NumberArg = ...,
         top: NumberArg = ...,
         bottom: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[QuadArgs],
     ) -> GlyphRenderer[glyphs.Quad]: ...
 
@@ -466,6 +501,7 @@ class BokehAccessor(Figure):
         y1: NumberArg = ...,
         cx: NumberArg = ...,
         cy: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[QuadraticArgs],
     ) -> GlyphRenderer[glyphs.Quadratic]: ...
 
@@ -474,28 +510,36 @@ class BokehAccessor(Figure):
         y0: NumberArg = ...,
         x1: NumberArg = ...,
         y1: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[SegmentArgs],
     ) -> GlyphRenderer[glyphs.Segment]: ...
 
     def vstrip(self,
         x0: NumberArg = ...,
         x1: NumberArg = ...,
+        *, legend: bool = ...,
         **kwargs: Unpack[VStripArgs],
     ) -> GlyphRenderer[glyphs.VStrip]: ...
 
     # Stack methods
 
-    def harea_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.HArea]]: ...
+    def harea_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.HArea]]: ...
 
-    def hbar_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.HBar]]: ...
+    def hbar_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.HBar]]: ...
 
-    def hline_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
+    def hline_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
 
-    def varea_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.VArea]]: ...
+    def varea_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.VArea]]: ...
 
-    def vbar_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.VBar]]: ...
+    def vbar_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.VBar]]: ...
 
-    def vline_stack(self, stackers: Sequence[str] | None = ..., **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
+    def vline_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
+ **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
 
 
 class PolarsBokehAccessor(BokehAccessor):

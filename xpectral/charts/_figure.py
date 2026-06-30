@@ -4,6 +4,7 @@
 
 # Standard library imports
 from __future__ import annotations
+from typing import Self
 
 # Other imports
 from bokeh.models import Plot
@@ -75,7 +76,7 @@ class Figure(Plot):
         )
 
     @property
-    def plot(self):
+    def plot(self) -> Self:
         return self
 
     @property

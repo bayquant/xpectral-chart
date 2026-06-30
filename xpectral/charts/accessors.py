@@ -10,6 +10,7 @@ from datetime import datetime
 from datetime import time
 from typing import Any
 from typing import Callable
+from typing import Self
 from typing import Sequence
 
 # Other imports
@@ -40,7 +41,7 @@ class BokehAccessor(Figure):
     def __init__(self, df) -> None:
         self._df = df
 
-    def __call__(self, *args, **kwargs) -> "BokehAccessor":
+    def __call__(self, *args, **kwargs) -> Self:
         super().__init__(*args, **kwargs)
         return self.plot
 

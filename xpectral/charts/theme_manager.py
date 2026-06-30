@@ -27,6 +27,12 @@ BASE_ATTRS: dict[str, dict[str, Any]] = {
         "logo": None,
         "autohide": True,
     },
+    "Legend": {
+        "spacing": 2,
+        "padding": 6,
+        "label_height": 16,
+        "glyph_height": 16,
+    },
 }
 
 THEMES = {
@@ -70,7 +76,6 @@ THEMES = {
                     "axis_label_text_font_style": "normal",
                 },
                 "Legend": {
-                    "spacing": 8,
                     "glyph_width": 15,
                     "label_standoff": 8,
                     "label_text_color": "#1c2f5e",
@@ -217,4 +222,4 @@ def _attrs_of(theme: Theme) -> dict[str, dict[str, Any]]:
 
 
 for _name, _theme in THEMES.items():
-    THEMES[_name] = Theme(json={"attrs": _merge_attrs(BASE_ATTRS, _attrs_of(_theme))})
+    THEMES[_name] = Theme(json={"attrs": _merge_attrs(_attrs_of(_theme), BASE_ATTRS)})

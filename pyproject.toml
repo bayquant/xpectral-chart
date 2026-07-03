@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "xpectral-chart"
-version = "1.0.3"
+version = "1.0.0"
 description = "Fluent Bokeh charting for Polars and Pandas DataFrames"
 readme = "README.md"
 requires-python = ">=3.12"

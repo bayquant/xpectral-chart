@@ -1,6 +1,6 @@
 # Xpectral Chart
 
-![Spectral decomposition](assets/xpectral_banner.gif)
+![Spectral decomposition](https://raw.githubusercontent.com/bayquant/xpectral-chart/main/assets/xpectral_banner.gif)
 
 Fluent Bokeh charting that extends **Polars** and **Pandas** DataFrames via the
 accessor pattern: `df.bokeh.line(...)`, `df.bokeh.scatter(...)`, and more.

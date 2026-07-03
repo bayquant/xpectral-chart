@@ -1,23 +1,20 @@
-# Xpectral
+# Xpectral Chart
 
 ![Spectral decomposition](assets/xpectral_banner.gif)
 
-A quantitative research library that extends **Polars** and **Pandas** DataFrames with charting and quant analytics.
+Fluent Bokeh charting that extends **Polars** and **Pandas** DataFrames via the
+accessor pattern: `df.bokeh.line(...)`, `df.bokeh.scatter(...)`, and more.
 
-## Modules
+Part of the Xpectral project, alongside [`xpectral-quant`](https://github.com/bayquant/xpectral-quant)
+(financial metrics and market data). Both install into the shared `xpectral`
+namespace and can be used together.
 
-- **`xpectral.charts`** — Fluent Bokeh visualization via `df.bokeh.line(...)`, `df.bokeh.scatter(...)`, etc.
-- **`xpectral.quant`** — Financial metrics (returns, volatility, beta) via `pl.col(...).quant.returns()`
-- **`xpectral.data`** — Market data from the Polygon/Massive API with caching and rate limiting
-
-## `xpectral.charts`
-
-### Usage
+## Usage
 
 ```python
-import xpectral  # registers the accessors
-from xpectral import PandasDataFrame
-from xpectral import PolarsDataFrame
+import xpectral.charts  # registers the df.bokeh accessor
+from xpectral.charts import PandasDataFrame
+from xpectral.charts import PolarsDataFrame
 
 df: PolarsDataFrame = pl.DataFrame({"x": [1, 2, 3], "y": [4, 5, 6]})
 fig = df.bokeh(title="Example", width=600, height=400)
@@ -28,11 +25,17 @@ pd_fig = pd_df.bokeh(title="Example", width=600, height=400)
 pd_fig.line(x="x", y="y")
 ```
 
-Annotate sample DataFrames with `PolarsDataFrame` or `PandasDataFrame` when you want the editor (pyright) to resolve the `df.bokeh(...)` parameters and chained accessor methods. Annotation is neccessary for type hinting as accessors are not discovered dinamically.
+Importing `xpectral.charts` is what registers the accessor on Polars and Pandas
+DataFrames. Annotate sample DataFrames with `PolarsDataFrame` or
+`PandasDataFrame` when you want the editor (pyright) to resolve the
+`df.bokeh(...)` parameters and chained accessor methods — annotation is
+necessary for type hinting, as accessors are not discovered dynamically.
 
 ### Custom chart methods
 
-Use `BokehAccessor.register` to add your own methods to the accessor. The decorated function receives `self` — the accessor instance — giving access to `self._df`, `self.source`, `self.plot`, and all built-in glyph methods.
+Use `BokehAccessor.register` to add your own methods to the accessor. The
+decorated function receives `self` — the accessor instance — giving access to
+`self._df`, `self.source`, `self.plot`, and all built-in glyph methods.
 
 ```python
 from xpectral.charts import BokehAccessor
@@ -46,16 +49,20 @@ fig = df.bokeh(title="Bands", width=800, height=400)
 fig.price_band(mid="close", upper="upper", lower="lower")
 ```
 
-The method is available on both Polars and Pandas accessors immediately after registration.
+The method is available on both Polars and Pandas accessors immediately after
+registration.
+
+See [`xpectral/charts/README.md`](xpectral/charts/README.md) for the module-level
+documentation (glyph methods, stacks, auto-color, themes, datetime axes).
 
 ## Install
 
 ```bash
-pip install xpectral
+pip install xpectral-chart
 ```
 
 ```bash
-uv add xpectral
+uv add xpectral-chart
 ```
 
 For development:

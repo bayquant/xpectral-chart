@@ -27,6 +27,8 @@ from .accessors import BokehAccessor
 from .accessors import PandasBokehAccessor
 from .accessors import PolarsBokehAccessor
 from .._typing import AxisType
+from .._typing import PandasDataFrame
+from .._typing import PolarsDataFrame
 from .._typing import RangeLike
 
 # -----------------------------------------------------------------------------
@@ -36,7 +38,9 @@ from .._typing import RangeLike
 __all__ = [
     "BokehAccessor",
     "PandasBokehAccessor",
+    "PandasDataFrame",
     "PolarsBokehAccessor",
+    "PolarsDataFrame",
     "figure",
 ]
 

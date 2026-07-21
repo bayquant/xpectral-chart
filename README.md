@@ -52,9 +52,6 @@ fig.price_band(mid="close", upper="upper", lower="lower")
 The method is available on both Polars and Pandas accessors immediately after
 registration.
 
-See [`xpectral/charts/README.md`](xpectral/charts/README.md) for the module-level
-documentation (glyph methods, stacks, auto-color, themes, datetime axes).
-
 ## Install
 
 ```bash

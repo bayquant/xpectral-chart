@@ -2,20 +2,21 @@
 # Imports
 # -----------------------------------------------------------------------------
 
-# Standard library imports
+# Future imports
 from __future__ import annotations
+
+# Standard library imports
 from datetime import date
 from functools import wraps
-from inspect import Parameter
-from inspect import Signature
-from inspect import signature
+from inspect import Parameter, Signature, signature
 
-# Other imports
-from bokeh.models import BasicTickFormatter
-from bokeh.models import DatetimeTickFormatter
+# Third-party imports
+from bokeh.models import BasicTickFormatter, DatetimeTickFormatter
 from bokeh.models.renderers import GlyphRenderer
 from bokeh.plotting._docstring import generate_docstring
 from bokeh.plotting._renderer import create_renderer
+
+# Local imports
 from .palette_manager import palette
 
 # -----------------------------------------------------------------------------

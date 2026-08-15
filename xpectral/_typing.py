@@ -1,32 +1,30 @@
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
+
+# Future imports
 from __future__ import annotations
 
-from typing import Any
-from typing import Literal
-from typing import Protocol
-from typing import Sequence
-from typing import TypeAlias
-from typing import TypeVar
+# Standard library imports
+from typing import Any, Literal, Protocol, Sequence, TypeAlias, TypeVar
 
+# Third-party imports
 from bokeh.core.enums import AutoType as Auto
 from bokeh.core.enums import HorizontalLocationType as HorizontalLocation
 from bokeh.core.enums import LocationType as Location
 from bokeh.core.enums import SizingModeType as SizingMode
 from bokeh.core.enums import VerticalLocationType as VerticalLocation
-from bokeh.core.properties import Color
-from bokeh.core.properties import Datetime
-from bokeh.core.properties import TextLike
-from bokeh.core.properties import TimeDelta
+from bokeh.core.properties import Color, Datetime, TextLike, TimeDelta
 from bokeh.models.dom import Template
 from bokeh.models.ranges import Range
-from bokeh.models.tools import Drag
-from bokeh.models.tools import GestureTool
-from bokeh.models.tools import InspectTool
-from bokeh.models.tools import Scroll
-from bokeh.models.tools import Tap
-from bokeh.models.tools import Tool
+from bokeh.models.tools import Drag, GestureTool, InspectTool, Scroll, Tap, Tool
 
-from .charts.accessors import PandasBokehAccessor
-from .charts.accessors import PolarsBokehAccessor
+# Local imports
+from .charts.accessors import PandasBokehAccessor, PolarsBokehAccessor
+
+# -----------------------------------------------------------------------------
+# Globals and constants
+# -----------------------------------------------------------------------------
 
 RangeLike: TypeAlias = (
     Range
@@ -41,6 +39,10 @@ AxisType: TypeAlias = (
 )
 
 T_BokehAccessor = TypeVar("T_BokehAccessor", PandasBokehAccessor, PolarsBokehAccessor)
+
+# -----------------------------------------------------------------------------
+# General API
+# -----------------------------------------------------------------------------
 
 
 class BokehDataFrame(Protocol[T_BokehAccessor]):

@@ -2,26 +2,26 @@
 # Imports
 # -----------------------------------------------------------------------------
 
-# Standard library imports
+# Future imports
 from __future__ import annotations
-import warnings
-from datetime import date
-from datetime import datetime
-from datetime import time
-from typing import Any
-from typing import Callable
-from typing import Self
-from typing import Sequence
 
-# Other imports
-from bokeh.models import ColumnDataSource
-from bokeh.models import glyphs
-from bokeh.models.renderers import GlyphRenderer
-from bokeh.plotting._stack import double_stack
-from bokeh.plotting._stack import single_stack
-from bokeh.util.warnings import BokehUserWarning
+# Standard library imports
+import warnings
+from datetime import date, datetime, time
+from typing import Any, Callable, Self, Sequence
+
+# Third-party imports
 import pandas as pd
 import polars as pl
+from bokeh.io import show as _bokeh_show
+from bokeh.io.notebook import CommsHandle, ProxyUrlFunc
+from bokeh.models import ColumnDataSource, glyphs
+from bokeh.models.renderers import GlyphRenderer
+from bokeh.plotting._stack import double_stack, single_stack
+from bokeh.util.browser import BrowserTarget
+from bokeh.util.warnings import BokehUserWarning
+
+# Local imports
 from ._decorators import glyph_method
 from ._figure import Figure
 
@@ -37,6 +37,10 @@ warnings.simplefilter("ignore", BokehUserWarning)
 
 
 class BokehAccessor(Figure):
+    # See the matching comment on Figure in _figure.py — every subclass needs
+    # its own explicit copy of these, inheriting them isn't enough.
+    __view_model__ = "Figure"
+    __view_module__ = "bokeh.plotting.figure"
 
     def __init__(self, df) -> None:
         self._df = df
@@ -74,6 +78,32 @@ class BokehAccessor(Figure):
         """
         setattr(cls, func.__name__, func)
         return func
+
+    def show(
+        self,
+        browser: str | None = None,
+        new: BrowserTarget = "tab",
+        notebook_handle: bool = False,
+        notebook_url: str | ProxyUrlFunc = "localhost:8888",
+        **kwargs: Any,
+    ) -> CommsHandle | None:
+        """Display this figure immediately.
+
+        Equivalent to ``bokeh.io.show(fig)`` but callable directly on the
+        figure, so ``fig.show()`` replaces the need to import and call
+        ``show`` separately.
+
+        See Also:
+            https://docs.bokeh.org/en/latest/docs/reference/io.html#bokeh.io.show
+        """
+        return _bokeh_show(
+            self,
+            browser=browser,
+            new=new,
+            notebook_handle=notebook_handle,
+            notebook_url=notebook_url,
+            **kwargs,
+        )
 
     # -------------------------------------------
     # Glyph methods with both x and y parameters
@@ -552,7 +582,6 @@ class BokehAccessor(Figure):
 
 @pl.api.register_dataframe_namespace("bokeh")
 class PolarsBokehAccessor(BokehAccessor):
-
     __view_model__ = "Figure"
     __view_module__ = "bokeh.plotting.figure"
 
@@ -566,7 +595,6 @@ class PolarsBokehAccessor(BokehAccessor):
 
 @pd.api.extensions.register_dataframe_accessor("bokeh")
 class PandasBokehAccessor(BokehAccessor):
-
     __view_model__ = "Figure"
     __view_module__ = "bokeh.plotting.figure"
 

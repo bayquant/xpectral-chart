@@ -2,22 +2,29 @@
 # Imports
 # -----------------------------------------------------------------------------
 
-# Standard library imports
+# Future imports
 from __future__ import annotations
+
+# Standard library imports
+import warnings
 from typing import Self
 
-# Other imports
+# Third-party imports
 from bokeh.models import Plot
 from bokeh.plotting._figure import FigureOptions
-from bokeh.plotting._plot import get_range
-from bokeh.plotting._plot import get_scale
-from bokeh.plotting._plot import process_axis_and_grid
-from bokeh.plotting._tools import process_active_tools
-from bokeh.plotting._tools import process_tools_arg
+from bokeh.plotting._plot import get_range, get_scale, process_axis_and_grid
+from bokeh.plotting._tools import process_active_tools, process_tools_arg
+from bokeh.util.warnings import BokehUserWarning
 
 # -----------------------------------------------------------------------------
 # Globals and constants
 # -----------------------------------------------------------------------------
+
+# Masquerading as "bokeh.plotting.figure.Figure" below (needed so Bokeh
+# resolves our subclasses to its own JS view rather than crashing trying to
+# build a nonexistent extension bundle for us) makes Bokeh emit a duplicate
+# qualified-model warning at class-definition time; it's expected and harmless.
+warnings.simplefilter("ignore", BokehUserWarning)
 
 # -----------------------------------------------------------------------------
 # General API
@@ -25,6 +32,15 @@ from bokeh.plotting._tools import process_tools_arg
 
 
 class Figure(Plot):
+    # Bokeh's HasProps.__init_subclass__ only checks the defining class's own
+    # __dict__ for these, so every subclass needs its own explicit copy —
+    # inheriting them from a base class doesn't count. Without this, Bokeh
+    # derives __view_module__ from cls.__module__ (e.g. "xpectral.charts._figure"),
+    # and since `xpectral` is a namespace package with no __file__, anything
+    # that walks the model registry (e.g. output_notebook()) crashes trying
+    # to resolve a JS extension bundle for it.
+    __view_model__ = "Figure"
+    __view_module__ = "bokeh.plotting.figure"
 
     def __init__(self, *arg, **kwargs) -> None:
         opts = FigureOptions(kwargs)

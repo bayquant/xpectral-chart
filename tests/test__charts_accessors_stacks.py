@@ -1,10 +1,16 @@
-from datetime import date
-import unittest
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
+# Standard library imports
+import unittest
+from datetime import date
+
+# Third-party imports
 import pandas as pd
 import polars as pl
 
-from xpectral.charts import accessors
+# First-party imports
 
 
 class TestAutoStackers(unittest.TestCase):
@@ -46,10 +52,7 @@ class TestAutoStackers(unittest.TestCase):
 
     def test_auto_legend_derives_from_stacker_names(self) -> None:
         fig = self.df.bokeh()
-        renderers = fig.vline_stack(x="step")
-        legend_labels = [
-            r.data_source.data.get("legend_label") or r.glyph.name for r in renderers
-        ]
+        fig.vline_stack(x="step")
         # legend_label is distributed per-stacker by single_stack; check via the renderer name
         # and that a Legend annotation was created with 2 entries.
         self.assertEqual(len(fig.legend[0].items), 2)

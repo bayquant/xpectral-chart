@@ -4,11 +4,13 @@
 # Imports
 # -----------------------------------------------------------------------------
 
-# Standard library imports
+# Future imports
 from __future__ import annotations
+
+# Standard library imports
 from typing import Sequence
 
-# Other imports
+# Third-party imports
 from bokeh.palettes import Category10
 
 # -----------------------------------------------------------------------------

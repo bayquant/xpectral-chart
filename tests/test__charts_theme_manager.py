@@ -1,17 +1,24 @@
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
+
+# Standard library imports
 import unittest
 
+# Third-party imports
 from bokeh.io import curdoc
-from bokeh.models import Plot
-from bokeh.models import Toolbar
+from bokeh.models import Plot, Toolbar
 from bokeh.models.glyphs import Line
-from bokeh.themes import built_in_themes
-from bokeh.themes import Theme
+from bokeh.themes import Theme, built_in_themes
 
-from xpectral.charts.theme_manager import DEFAULT_THEME
-from xpectral.charts.theme_manager import register_theme
-from xpectral.charts.theme_manager import THEMES
-from xpectral.charts.theme_manager import ThemeAccessor
-from xpectral.charts.theme_manager import theme
+# First-party imports
+from xpectral.charts.theme_manager import (
+    DEFAULT_THEME,
+    THEMES,
+    ThemeAccessor,
+    register_theme,
+    theme,
+)
 
 
 class TestThemeAccessor(unittest.TestCase):

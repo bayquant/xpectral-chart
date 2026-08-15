@@ -3,33 +3,24 @@
 # -----------------------------------------------------------------------------
 
 # Standard library imports
-from typing import Any
-from typing import Sequence
+from typing import Any, Sequence
 
-# Other imports
+# Third-party imports
+import pandas as pd
+import polars as pl
 from bokeh.core.enums import AutoType as Auto
 from bokeh.core.enums import HorizontalLocationType as HorizontalLocation
 from bokeh.core.enums import LocationType as Location
 from bokeh.core.enums import SizingModeType as SizingMode
 from bokeh.core.enums import VerticalLocationType as VerticalLocation
-from bokeh.core.properties import Color
-from bokeh.core.properties import TextLike
+from bokeh.core.properties import Color, TextLike
 from bokeh.models.dom import Template
-from bokeh.models.tools import Drag
-from bokeh.models.tools import GestureTool
-from bokeh.models.tools import InspectTool
-from bokeh.models.tools import Scroll
-from bokeh.models.tools import Tap
-from bokeh.models.tools import Tool
-import pandas as pd
-import polars as pl
-from .accessors import BokehAccessor
-from .accessors import PandasBokehAccessor
-from .accessors import PolarsBokehAccessor
-from .._typing import AxisType
-from .._typing import PandasDataFrame
-from .._typing import PolarsDataFrame
-from .._typing import RangeLike
+from bokeh.models.tools import Drag, GestureTool, InspectTool, Scroll, Tap, Tool
+
+from .._typing import AxisType, PandasDataFrame, PolarsDataFrame, RangeLike
+
+# Local imports
+from .accessors import BokehAccessor, PandasBokehAccessor, PolarsBokehAccessor
 
 # -----------------------------------------------------------------------------
 # Globals and constants
@@ -124,7 +115,7 @@ def figure(
 
         fig = figure(df.drop("step"), title="My chart", width=700)
         fig.vline_stack(color=Sunset10)
-        show(fig)
+        fig.show()
     """
     kwargs = {
         k: v for k, v in locals().items() if not isinstance(v, _Unset) and k != "df"

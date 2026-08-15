@@ -1,11 +1,16 @@
-from datetime import date
-from datetime import datetime
-import unittest
+# -----------------------------------------------------------------------------
+# Imports
+# -----------------------------------------------------------------------------
 
+# Standard library imports
+import unittest
+from datetime import date, datetime
+
+# Third-party imports
 import pandas as pd
 import polars as pl
 
-from xpectral.charts import accessors
+# First-party imports
 
 
 class TestCoerceUnsafeDates(unittest.TestCase):

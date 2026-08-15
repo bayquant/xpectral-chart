@@ -4,14 +4,15 @@
 # Imports
 # -----------------------------------------------------------------------------
 
-# Standard library imports
+# Future imports
 from __future__ import annotations
+
+# Standard library imports
 from typing import Any
 
-# Other imports
+# Third-party imports
 from bokeh.io import curdoc
-from bokeh.themes import built_in_themes
-from bokeh.themes import Theme
+from bokeh.themes import Theme, built_in_themes
 
 # -----------------------------------------------------------------------------
 # Globals and constants

@@ -85,7 +85,7 @@ class TestAutoStackers(unittest.TestCase):
         df = pl.DataFrame({"path_0": [1.0, 2.0, 3.0]})
         fig = df.bokeh()
         fig.line(y="path_0")
-        # x defaults to synthetic "x" column — should still label from y
+        # x defaults to synthetic "x" column: should still label from y
         self.assertEqual(fig.legend[0].items[0].label["value"], "path_0")
 
     def test_pandas_auto_stackers_parity(self) -> None:

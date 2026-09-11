@@ -22,7 +22,7 @@ DEFAULT_THEME = "light_minimal"
 
 # Structural/UX defaults merged into every theme below (built-in and custom).
 # Kept intentionally free of colors/fonts so it never overrides a theme's own
-# visual identity — add more cross-theme defaults here as the need arises.
+# visual identity. Add more cross-theme defaults here as the need arises.
 BASE_ATTRS: dict[str, dict[str, Any]] = {
     "Toolbar": {
         "logo": None,

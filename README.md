@@ -28,13 +28,13 @@ pd_fig.line(x="x", y="y")
 Importing `xpectral.charts` is what registers the accessor on Polars and Pandas
 DataFrames. Annotate sample DataFrames with `PolarsDataFrame` or
 `PandasDataFrame` when you want the editor (pyright) to resolve the
-`df.bokeh(...)` parameters and chained accessor methods — annotation is
+`df.bokeh(...)` parameters and chained accessor methods: annotation is
 necessary for type hinting, as accessors are not discovered dynamically.
 
 ### Custom chart methods
 
 Use `BokehAccessor.register` to add your own methods to the accessor. The
-decorated function receives `self` — the accessor instance — giving access to
+decorated function receives `self` (the accessor instance), giving access to
 `self._df`, `self.source`, `self.plot`, and all built-in glyph methods.
 
 ```python

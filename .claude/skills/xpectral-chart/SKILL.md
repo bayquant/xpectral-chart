@@ -1,6 +1,6 @@
 ---
 name: xpectral-chart
-description: Use when writing code in THIS repo (xpectral-chart) that plots a Polars/Pandas DataFrame with Bokeh via the df.bokeh accessor — building figures, glyphs, stacked charts, themes, or palettes.
+description: Use when writing code in THIS repo (xpectral-chart) that plots a Polars/Pandas DataFrame with Bokeh via the df.bokeh accessor: building figures, glyphs, stacked charts, themes, or palettes.
 ---
 
 # xpectral-chart
@@ -22,16 +22,16 @@ fig.show()                       # opens in browser / renders in notebook
 - `df.bokeh(**figure_kwargs)` creates the figure (accepts the same kwargs as
   `bokeh.plotting.figure`: `title`, `width`, `height`, `x_axis_type`, `tools`, etc.).
 - Every glyph method (`line`, `scatter`, `vbar`, `varea`, `rect`, `segment`, ...)
-  maps 1:1 to a Bokeh glyph — same name, same kwargs — plus one extra:
+  maps 1:1 to a Bokeh glyph (same name, same kwargs) plus one extra:
   `legend: bool = True` (auto-adds a legend entry from the y/x column name).
 - Pass column names as strings (`x="date"`); pass a literal array/Series directly
   (not as a string) if the data isn't a column in `df`.
 - If `x`/`y` is omitted where required, a 0..n-1 index is auto-injected.
 - Color is auto-cycled from a shared palette when no `color`/`*_color` kwarg is
-  given — don't hand-pick colors unless the user wants specific ones.
+  given. Don't hand-pick colors unless the user wants specific ones.
 - A `date`/`datetime` column plotted on an axis auto-gets a datetime tick formatter.
 - `from xpectral.charts import figure` is a free-function equivalent:
-  `figure(df, **kwargs)` instead of `df.bokeh(**kwargs)` — same result, usable
+  `figure(df, **kwargs)` instead of `df.bokeh(**kwargs)`: same result, usable
   inline without a typed intermediate variable.
 
 ## Stacked charts

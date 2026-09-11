@@ -33,7 +33,7 @@ warnings.simplefilter("ignore", BokehUserWarning)
 
 class Figure(Plot):
     # Bokeh's HasProps.__init_subclass__ only checks the defining class's own
-    # __dict__ for these, so every subclass needs its own explicit copy —
+    # __dict__ for these, so every subclass needs its own explicit copy;
     # inheriting them from a base class doesn't count. Without this, Bokeh
     # derives __view_module__ from cls.__module__ (e.g. "xpectral.charts._figure"),
     # and since `xpectral` is a namespace package with no __file__, anything

@@ -37,7 +37,7 @@ warnings.simplefilter("ignore", BokehUserWarning)
 
 
 class BokehAccessor(Figure):
-    # See the matching comment on Figure in _figure.py — every subclass needs
+    # See the matching comment on Figure in _figure.py: every subclass needs
     # its own explicit copy of these, inheriting them isn't enough.
     __view_model__ = "Figure"
     __view_module__ = "bokeh.plotting.figure"
@@ -55,8 +55,8 @@ class BokehAccessor(Figure):
 
         Use as a decorator to add custom chart methods to all
         ``BokehAccessor`` subclasses (both Pandas and Polars variants).
-        The decorated function's first parameter must be ``self`` — the
-        accessor instance — which exposes ``self._df``, ``self.source``,
+        The decorated function's first parameter must be ``self`` (the
+        accessor instance), which exposes ``self._df``, ``self.source``,
         ``self.plot``, and every built-in glyph method.
 
         Args:

@@ -54,7 +54,7 @@ def glyph_method(glyphclass):
             # Map positional inputs to their corresponding glyph kwargs by param name.
             for arg, param in zip(args, sigparams[1:]):
                 kwargs[param.name] = arg
-            # Pop `legend` before it reaches create_renderer — it is not a glyph property.
+            # Pop `legend` before it reaches create_renderer: it is not a glyph property.
             legend = kwargs.pop("legend", True)
             # Default source comes from the accessor unless explicitly provided.
             kwargs.setdefault("source", self.source)
@@ -87,8 +87,8 @@ def glyph_method(glyphclass):
                     kwargs["legend_label"] = label
             # Auto-assign the next palette color when the caller left color unset,
             # mirroring pandas.DataFrame.plot()'s per-series color cycle. Keyed off
-            # how many glyph renderers the plot already has, so successive calls —
-            # and each stacker routed back through here — step through the palette.
+            # how many glyph renderers the plot already has, so successive calls
+            # (and each stacker routed back through here) step through the palette.
             # Skipped for glyphs with no color property (e.g. images).
             if _is_colorable(glyphclass) and not _has_color(kwargs):
                 kwargs["color"] = _cycle_color(self.plot)

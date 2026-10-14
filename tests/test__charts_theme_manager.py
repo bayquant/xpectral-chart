@@ -12,7 +12,7 @@ from bokeh.models.glyphs import Line
 from bokeh.themes import Theme, built_in_themes
 
 # First-party imports
-from xpectral.charts.theme_manager import (
+from xpectral_chart.theme_manager import (
     DEFAULT_THEME,
     THEMES,
     ThemeAccessor,

@@ -31,7 +31,7 @@ DEFAULT_PALETTE: tuple[str, ...] = Category10[10]
 class PaletteAccessor:
     """Settable, cycling palette used for automatic per-series colors.
 
-    Mirrors the global :class:`~xpectral.charts.theme_manager.ThemeAccessor`
+    Mirrors the global :class:`~xpectral_chart.theme_manager.ThemeAccessor`
     pattern: a module-level ``palette`` instance whose colors drive the
     auto-color assigned to glyphs that leave their color unset. Themes still
     control everything else (axes, grid, fonts, backgrounds).

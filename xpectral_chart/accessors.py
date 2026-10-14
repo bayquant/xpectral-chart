@@ -17,13 +17,13 @@ from bokeh.io import show as _bokeh_show
 from bokeh.io.notebook import CommsHandle, ProxyUrlFunc
 from bokeh.models import ColumnDataSource, glyphs
 from bokeh.models.renderers import GlyphRenderer
+from bokeh.plotting import figure as _bokeh_figure
 from bokeh.plotting._stack import double_stack, single_stack
 from bokeh.util.browser import BrowserTarget
 from bokeh.util.warnings import BokehUserWarning
 
 # Local imports
 from ._decorators import glyph_method
-from ._figure import Figure
 
 # -----------------------------------------------------------------------------
 # Globals and constants
@@ -36,18 +36,33 @@ warnings.simplefilter("ignore", BokehUserWarning)
 # -----------------------------------------------------------------------------
 
 
-class BokehAccessor(Figure):
-    # See the matching comment on Figure in _figure.py: every subclass needs
-    # its own explicit copy of these, inheriting them isn't enough.
+class BokehAccessor(_bokeh_figure):
+    # Bokeh's HasProps.__init_subclass__ only checks the defining class's own
+    # __dict__ for these, so every subclass needs its own explicit copy;
+    # inheriting them from a base class doesn't count. Without this, Bokeh
+    # derives __view_module__ from cls.__module__ (e.g. "xpectral_chart.accessors"),
+    # and anything that walks the model registry (e.g. output_notebook())
+    # then tries to resolve a JS extension bundle for that module.
     __view_model__ = "Figure"
     __view_module__ = "bokeh.plotting.figure"
 
-    def __init__(self, df) -> None:
+    def __init__(self, df: pd.DataFrame | pl.DataFrame) -> None:
         self._df = df
 
     def __call__(self, *args, **kwargs) -> Self:
         super().__init__(*args, **kwargs)
         return self.plot
+
+    @property
+    def source(self) -> ColumnDataSource:
+        if not hasattr(self, "_source"):
+            data = (
+                self._df.to_dict(as_series=False)
+                if isinstance(self._df, pl.DataFrame)
+                else self._df.to_dict(orient="list")
+            )
+            self._source = ColumnDataSource(_coerce_unsafe_dates(data))
+        return self._source
 
     @classmethod
     def register(cls, func: Callable[..., Any]) -> Callable[..., Any]:
@@ -347,7 +362,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack horizontal filled areas between consecutive stacker columns.
@@ -360,7 +375,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``y``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`harea`
@@ -376,7 +391,7 @@ class BokehAccessor(Figure):
         if "y" not in kwargs:
             kwargs["y"] = _ensure_default_coord(self.source, "y")
         stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="x1", spec1="x2", **kwargs):
             result.append(self.harea(**kwarg))
@@ -386,7 +401,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack horizontal bars between consecutive stacker columns.
@@ -399,7 +414,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``y``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`hbar`
@@ -415,7 +430,7 @@ class BokehAccessor(Figure):
         if "y" not in kwargs:
             kwargs["y"] = _ensure_default_coord(self.source, "y")
         stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in double_stack(
             stackers=stackers, spec0="left", spec1="right", **kwargs
@@ -427,7 +442,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack horizontal lines at the cumulative sum of each stacker column.
@@ -439,7 +454,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``y``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`line`
@@ -455,7 +470,7 @@ class BokehAccessor(Figure):
         if "y" not in kwargs:
             kwargs["y"] = _ensure_default_coord(self.source, "y")
         stackers = _resolve_stackers(self._df, stackers, kwargs["y"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in single_stack(stackers=stackers, spec="x", **kwargs):
             result.append(self.line(**kwarg))
@@ -465,7 +480,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack vertical filled areas between consecutive stacker columns.
@@ -478,7 +493,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``x``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`varea`
@@ -494,7 +509,7 @@ class BokehAccessor(Figure):
         if "x" not in kwargs:
             kwargs["x"] = _ensure_default_coord(self.source, "x")
         stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in double_stack(stackers=stackers, spec0="y1", spec1="y2", **kwargs):
             result.append(self.varea(**kwarg))
@@ -504,7 +519,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack vertical bars between consecutive stacker columns.
@@ -517,7 +532,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``x``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`vbar`
@@ -533,7 +548,7 @@ class BokehAccessor(Figure):
         if "x" not in kwargs:
             kwargs["x"] = _ensure_default_coord(self.source, "x")
         stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in double_stack(
             stackers=stackers, spec0="bottom", spec1="top", **kwargs
@@ -545,7 +560,7 @@ class BokehAccessor(Figure):
         self,
         stackers: Sequence[str] | None = None,
         *,
-        legend: bool = True,
+        auto_legend: bool = True,
         **kwargs: Any,
     ) -> list[GlyphRenderer]:
         """Stack vertical lines at the cumulative sum of each stacker column.
@@ -557,7 +572,7 @@ class BokehAccessor(Figure):
             stackers: Column names to stack in order. If not given, stacks
                 every numeric column of the underlying DataFrame except
                 whichever column is passed as ``x``.
-            legend: Whether to label each stacker with its column name when
+            auto_legend: Whether to label each stacker with its column name when
                 ``legend_label`` isn't given explicitly, mirroring
                 ``pandas.DataFrame.plot()``'s ``legend`` parameter.
             **kwargs: Visual properties forwarded to :meth:`line`
@@ -573,37 +588,11 @@ class BokehAccessor(Figure):
         if "x" not in kwargs:
             kwargs["x"] = _ensure_default_coord(self.source, "x")
         stackers = _resolve_stackers(self._df, stackers, kwargs["x"])
-        _apply_auto_legend(kwargs, stackers, legend)
+        _apply_auto_legend(kwargs, stackers, auto_legend)
         result = []
         for kwarg in single_stack(stackers=stackers, spec="y", **kwargs):
             result.append(self.line(**kwarg))
         return result
-
-
-@pl.api.register_dataframe_namespace("bokeh")
-class PolarsBokehAccessor(BokehAccessor):
-    __view_model__ = "Figure"
-    __view_module__ = "bokeh.plotting.figure"
-
-    @property
-    def source(self) -> ColumnDataSource:
-        if not hasattr(self, "_source"):
-            data = _coerce_unsafe_dates(self._df.to_dict(as_series=False))
-            self._source = ColumnDataSource(data)
-        return self._source
-
-
-@pd.api.extensions.register_dataframe_accessor("bokeh")
-class PandasBokehAccessor(BokehAccessor):
-    __view_model__ = "Figure"
-    __view_module__ = "bokeh.plotting.figure"
-
-    @property
-    def source(self) -> ColumnDataSource:
-        if not hasattr(self, "_source"):
-            data = _coerce_unsafe_dates(self._df.to_dict(orient="list"))
-            self._source = ColumnDataSource(data)
-        return self._source
 
 
 # -----------------------------------------------------------------------------
@@ -668,22 +657,15 @@ def _ensure_default_coord(source: ColumnDataSource, key: str) -> str:
 
 
 def _apply_auto_legend(
-    kwargs: dict[str, Any], stackers: Sequence[str], legend: bool
+    kwargs: dict[str, Any], stackers: Sequence[str], auto_legend: bool
 ) -> None:
     # Mirrors pandas.DataFrame.plot(legend=True): label each stacked series
     # with its column name when no explicit legend_label is given.
     # Has no effect when the caller already supplied legend_label.
-    if legend and "legend_label" not in kwargs:
+    if auto_legend and "legend_label" not in kwargs:
         kwargs["legend_label"] = list(stackers)
-    elif not legend:
-        # Forward legend=False into the per-stacker glyph kwargs so the
+    elif not auto_legend:
+        # Forward auto_legend=False into the per-stacker glyph kwargs so the
         # glyph_method decorator doesn't re-enable auto-legend with its
-        # own default of legend=True.
-        kwargs["legend"] = False
-
-
-# Polars' NameSpace descriptor caches the accessor on the DataFrame instance
-# via setattr, causing the same BokehAccessor to be returned on repeated
-# accesses of df.bokeh. Replacing the descriptor with a non-caching property
-# ensures each access produces a fresh instance.
-pl.DataFrame.bokeh = property(lambda self: PolarsBokehAccessor(self))  # type: ignore[assignment]
+        # own default of auto_legend=True.
+        kwargs["auto_legend"] = False

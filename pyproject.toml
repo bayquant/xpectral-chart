@@ -1,6 +1,6 @@
 [project]
 name = "xpectral-chart"
-version = "1.0.4"
+version = "2.0.0"
 description = "Fluent Bokeh charting for Polars and Pandas DataFrames"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -42,10 +42,10 @@ dev = [
     "sphinx-autodoc-typehints>=2.0",  # type hint rendering in sphinx docs
 ]
 
-# `xpectral` is a PEP 420 namespace package shared with xpectral-quant, so it
-# has no top-level __init__.py. Ship only the chart half of the namespace.
+# A regular package with a unique import name (`xpectral_chart`), so it cannot
+# collide with sibling projects installed in the same environment.
 [tool.hatch.build.targets.wheel]
-only-include = ["xpectral/charts", "xpectral/_typing.py", "xpectral/py.typed"]
+packages = ["xpectral_chart"]
 
 [tool.ruff]
 line-length = 88
@@ -58,4 +58,4 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["xpectral"]
+known-first-party = ["xpectral_chart"]

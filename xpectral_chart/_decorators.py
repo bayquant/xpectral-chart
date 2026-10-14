@@ -40,7 +40,7 @@ def glyph_method(glyphclass):
             [Parameter("self", Parameter.POSITIONAL_OR_KEYWORD)]
             + [x[0] for x in parameters]
             + [Parameter("source", Parameter.KEYWORD_ONLY, default=None)]
-            + [Parameter("legend", Parameter.KEYWORD_ONLY, default=True)]
+            + [Parameter("auto_legend", Parameter.KEYWORD_ONLY, default=True)]
             + [Parameter("kwargs", Parameter.VAR_KEYWORD)]
         )
 
@@ -54,8 +54,11 @@ def glyph_method(glyphclass):
             # Map positional inputs to their corresponding glyph kwargs by param name.
             for arg, param in zip(args, sigparams[1:]):
                 kwargs[param.name] = arg
-            # Pop `legend` before it reaches create_renderer: it is not a glyph property.
-            legend = kwargs.pop("legend", True)
+            # Pop `auto_legend` before it reaches create_renderer: it is not a glyph
+            # property, and is named distinctly from Bokeh's own `legend` kwarg
+            # (which attaches an existing Legend/field and must reach create_renderer
+            # unmodified).
+            auto_legend = kwargs.pop("auto_legend", True)
             # Default source comes from the accessor unless explicitly provided.
             kwargs.setdefault("source", self.source)
             # Preserve any coordinate context passed through a custom Figure subclass.
@@ -81,7 +84,7 @@ def glyph_method(glyphclass):
             # vertical glyphs), fall back to x. Skipped when the caller already supplied
             # legend_label, or when the value is not a string (e.g. a literal array or
             # a synthetic index column that was just injected above).
-            if legend and "legend_label" not in kwargs:
+            if auto_legend and "legend_label" not in kwargs:
                 label = y_label or x_label
                 if label is not None:
                     kwargs["legend_label"] = label

@@ -1,24 +1,24 @@
-xpectral.charts
-===============
+xpectral_chart
+==============
 
 Bokeh visualization accessor registered on Polars and pandas DataFrames as ``df.bokeh``.
 
-.. automodule:: xpectral.charts.accessors
+.. automodule:: xpectral_chart.accessors
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: xpectral.charts._figure
+.. automodule:: xpectral_chart._figure
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: xpectral.charts.theme_manager
+.. automodule:: xpectral_chart.theme_manager
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: xpectral.charts.palette_manager
+.. automodule:: xpectral_chart.palette_manager
    :members:
    :undoc-members:
    :show-inheritance:

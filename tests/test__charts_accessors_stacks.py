@@ -61,7 +61,7 @@ class TestAutoStackers(unittest.TestCase):
 
     def test_legend_false_suppresses_legend(self) -> None:
         fig = self.df.bokeh()
-        fig.vline_stack(x="step", legend=False)
+        fig.vline_stack(x="step", auto_legend=False)
         self.assertEqual(len(fig.legend), 0)
 
     def test_explicit_legend_label_overrides_auto(self) -> None:

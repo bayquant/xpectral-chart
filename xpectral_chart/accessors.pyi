@@ -1,9 +1,12 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Imports
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 # Standard library imports
-from typing import Any, Literal, Sequence, TypeAlias, Unpack
+from typing import Any, Callable, Sequence, Unpack
+
+import pandas as pd
+import polars as pl
 
 # Other imports
 from bokeh._specs import (
@@ -20,33 +23,11 @@ from bokeh._specs import (
     SizeArg,
     StringArg,
 )
-from bokeh._types import (
-    Datetime,
-    TextLike,
-    TimeDelta,
-)
-from bokeh._types import Color
-from bokeh.core.enums import (
-    AutoType as Auto,
-    DirectionType as Direction,
-    HorizontalLocationType as HorizontalLocation,
-    LocationType as Location,
-    SizingModeType as SizingMode,
-    VerticalLocationType as VerticalLocation,
-)
-from bokeh.models import ColumnDataSource
-from bokeh.models import glyphs
-from bokeh.models.dom import Template
-from bokeh.models.ranges import Range
+from bokeh.core.enums import DirectionType as Direction
+from bokeh.io.notebook import CommsHandle, ProxyUrlFunc
+from bokeh.models import ColumnDataSource, glyphs
 from bokeh.models.renderers import GlyphRenderer
-from bokeh.models.tools import (
-    Drag,
-    GestureTool,
-    InspectTool,
-    Scroll,
-    Tap,
-    Tool,
-)
+from bokeh.plotting import figure as _bokeh_figure
 from bokeh.plotting.glyph_api import (
     AnnularWedgeArgs,
     AnnulusArgs,
@@ -57,9 +38,9 @@ from bokeh.plotting.glyph_api import (
     HAreaArgs,
     HAreaStepArgs,
     HBarArgs,
+    HexTileArgs,
     HSpanArgs,
     HStripArgs,
-    HexTileArgs,
     ImageArgs,
     ImageRGBAArgs,
     ImageStackArgs,
@@ -87,90 +68,38 @@ from bokeh.plotting.glyph_api import (
     VStripArgs,
     WedgeArgs,
 )
-import pandas as pd
-import polars as pl
-from ._figure import Figure
+from bokeh.util.browser import BrowserTarget
 
-#-----------------------------------------------------------------------------
-# Globals and constants
-#-----------------------------------------------------------------------------
-
-RangeLike: TypeAlias = (
-    Range
-    | tuple[float, float]
-    | tuple[Datetime, Datetime]
-    | tuple[TimeDelta, TimeDelta]
-    | Sequence[str]
-)
-
-AxisType: TypeAlias = Auto | Literal["linear", "log", "datetime", "timedelta", "mercator"] | None
-
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # General API
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-class BokehAccessor(Figure):
-
+class BokehAccessor(_bokeh_figure):
     def __init__(self, df: pd.DataFrame | pl.DataFrame) -> None: ...
-
-    def __call__(self,
-        *,
-        # Figure options
-        x_range: RangeLike = ...,
-        y_range: RangeLike = ...,
-        x_axis_type: AxisType = ...,
-        y_axis_type: AxisType = ...,
-        tools: str | Sequence[str | Tool] = ...,
-        x_minor_ticks: Auto | int = ...,
-        y_minor_ticks: Auto | int = ...,
-        x_axis_location: VerticalLocation | None = ...,
-        y_axis_location: HorizontalLocation | None = ...,
-        x_axis_label: TextLike | None = ...,
-        y_axis_label: TextLike | None = ...,
-        active_drag: Auto | str | Drag | None = ...,
-        active_inspect: Auto | str | InspectTool | Sequence[InspectTool] | None = ...,
-        active_scroll: Auto | str | Scroll | None = ...,
-        active_tap: Auto | str | Tap | None = ...,
-        active_multi: Auto | str | GestureTool | None = ...,
-        tooltips: Template | str | list[tuple[str, str]] | None = ...,
-        # Plot dimensions
-        width: int = ...,
-        height: int = ...,
-        frame_width: int = ...,
-        frame_height: int = ...,
-        min_width: int = ...,
-        max_width: int = ...,
-        min_height: int = ...,
-        max_height: int = ...,
-        sizing_mode: SizingMode = ...,
-        aspect_ratio: float | Auto = ...,
-        match_aspect: bool = ...,
-        # Plot title and toolbar
-        title: str | None = ...,
-        title_location: Location = ...,
-        toolbar_location: Location | None = ...,
-        toolbar_inner: bool = ...,
-        toolbar_sticky: bool = ...,
-        # Plot background and border
-        background_fill_color: Color = ...,
-        background_fill_alpha: float = ...,
-        border_fill_color: Color = ...,
-        border_fill_alpha: float = ...,
-        outline_line_color: Color | None = ...,
-        outline_line_alpha: float = ...,
-        outline_line_width: float = ...,
-        # Plot spacing
-        min_border: int = ...,
-        min_border_top: int = ...,
-        min_border_bottom: int = ...,
-        min_border_left: int = ...,
-        min_border_right: int = ...,
+    @classmethod
+    def register(cls, func: Callable[..., Any]) -> Callable[..., Any]: ...
+    @property
+    def source(self) -> ColumnDataSource: ...
+    def show(
+        self,
+        browser: str | None = ...,
+        new: BrowserTarget = ...,
+        notebook_handle: bool = ...,
+        notebook_url: str | ProxyUrlFunc = ...,
         **kwargs: Any,
-    ) -> BokehAccessor: ...
+    ) -> CommsHandle | None: ...
+
+    # Untyped on purpose: this is an internal construction step, never the
+    # user-facing entry point. `figure()` in `xpectral_chart/__init__.py` is
+    # the typed, documented way to pass figure kwargs (title, width, tools,
+    # ...); it forwards them here as **kwargs after resolving its own,
+    # fully-typed, named parameters.
+    def __call__(self, **kwargs: Any) -> BokehAccessor: ...
 
     # Glyph methods with both x and y parameters
 
-    def annular_wedge(self,
+    def annular_wedge(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         inner_radius: DistanceArg = ...,
@@ -178,83 +107,91 @@ class BokehAccessor(Figure):
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[AnnularWedgeArgs],
     ) -> GlyphRenderer[glyphs.AnnularWedge]: ...
-
-    def annulus(self,
+    def annulus(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         inner_radius: DistanceArg = ...,
         outer_radius: DistanceArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[AnnulusArgs],
     ) -> GlyphRenderer[glyphs.Annulus]: ...
-
-    def arc(self,
+    def arc(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         radius: DistanceArg = ...,
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ArcArgs],
     ) -> GlyphRenderer[glyphs.Arc]: ...
-
-    def block(self,
+    def block(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         width: DistanceArg = ...,
         height: DistanceArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[BlockArgs],
     ) -> GlyphRenderer[glyphs.Block]: ...
-
-    def ellipse(self,
+    def ellipse(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         width: DistanceArg = ...,
         height: DistanceArg = ...,
         angle: AngleArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[EllipseArgs],
     ) -> GlyphRenderer[glyphs.Ellipse]: ...
-
-    def image(self,
+    def image(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         image: Image2dArg = ...,
         x: NumberArg = ...,
         y: NumberArg = ...,
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ImageArgs],
     ) -> GlyphRenderer[glyphs.Image]: ...
-
-    def image_rgba(self,
+    def image_rgba(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         image: Image2dArg = ...,
         x: NumberArg = ...,
         y: NumberArg = ...,
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ImageRGBAArgs],
     ) -> GlyphRenderer[glyphs.ImageRGBA]: ...
-
-    def image_stack(self,
+    def image_stack(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         image: Image3dArg = ...,
         x: NumberArg = ...,
         y: NumberArg = ...,
         dw: DistanceArg = ...,
         dh: DistanceArg = ...,
         dilate: bool = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ImageStackArgs],
     ) -> GlyphRenderer[glyphs.ImageStack]: ...
-
-    def image_url(self,
+    def image_url(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         url: StringArg = ...,
         x: NumberArg = ...,
         y: NumberArg = ...,
@@ -262,182 +199,205 @@ class BokehAccessor(Figure):
         h: NullDistanceArg = ...,
         angle: AngleArg = ...,
         dilate: bool = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ImageURLArgs],
     ) -> GlyphRenderer[glyphs.ImageURL]: ...
-
-    def line(self,
+    def line(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[LineArgs],
     ) -> GlyphRenderer[glyphs.Line]: ...
-
-    def mathml_glyph(self,
+    def mathml_glyph(
+        self,
         x: NumberArg = ...,
         y: NumberArg = ...,
         text: StringArg = ...,
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[MathMLArgs],
     ) -> GlyphRenderer[glyphs.MathMLGlyph]: ...
-
-    def ngon(self,
+    def ngon(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         radius: DistanceArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[NgonArgs],
     ) -> GlyphRenderer[glyphs.Ngon]: ...
-
-    def patch(self,
+    def patch(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[PatchArgs],
     ) -> GlyphRenderer[glyphs.Patch]: ...
-
-    def ray(self,
+    def ray(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         length: DistanceArg = ...,
         angle: AngleArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[RayArgs],
     ) -> GlyphRenderer[glyphs.Ray]: ...
-
-    def rect(self,
+    def rect(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         width: DistanceArg = ...,
         height: DistanceArg = ...,
         angle: AngleArg = ...,
         dilate: bool = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[RectArgs],
     ) -> GlyphRenderer[glyphs.Rect]: ...
-
-    def scatter(self,
+    def scatter(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         size: SizeArg = ...,
         angle: AngleArg = ...,
         marker: MarkerArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[ScatterArgs],
     ) -> GlyphRenderer[glyphs.Scatter]: ...
-
-    def step(self,
+    def step(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[StepArgs],
     ) -> GlyphRenderer[glyphs.Step]: ...
-
-    def tex_glyph(self,
+    def tex_glyph(
+        self,
         x: NumberArg = ...,
         y: NumberArg = ...,
         text: StringArg = ...,
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[TeXArgs],
     ) -> GlyphRenderer[glyphs.TeXGlyph]: ...
-
-    def text(self,
+    def text(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         text: StringArg = ...,
         angle: AngleArg = ...,
         x_offset: FloatArg = ...,
         y_offset: FloatArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[TextArgs],
     ) -> GlyphRenderer[glyphs.Text]: ...
-
-    def wedge(self,
+    def wedge(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y: NumberArg = ...,
         radius: DistanceArg = ...,
         start_angle: AngleArg = ...,
         end_angle: AngleArg = ...,
         direction: Direction = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[WedgeArgs],
     ) -> GlyphRenderer[glyphs.Wedge]: ...
 
     # Vertical glyph methods (have parameter x but not y)
 
-    def varea(self,
+    def varea(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y1: NumberArg = ...,
         y2: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[VAreaArgs],
     ) -> GlyphRenderer[glyphs.VArea]: ...
-
-    def varea_step(self,
+    def varea_step(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         y1: NumberArg = ...,
         y2: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[VAreaStepArgs],
     ) -> GlyphRenderer[glyphs.VAreaStep]: ...
-
-    def vbar(self,
+    def vbar(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
         width: DistanceArg = ...,
         top: NumberArg = ...,
         bottom: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[VBarArgs],
     ) -> GlyphRenderer[glyphs.VBar]: ...
-
-    def vspan(self,
+    def vspan(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[VSpanArgs],
     ) -> GlyphRenderer[glyphs.VSpan]: ...
 
     # Horizontal glyph methods (have parameter y but not x)
 
-    def harea(self,
+    def harea(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x1: NumberArg = ...,
         x2: NumberArg = ...,
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HAreaArgs],
     ) -> GlyphRenderer[glyphs.HArea]: ...
-
-    def harea_step(self,
+    def harea_step(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x1: NumberArg = ...,
         x2: NumberArg = ...,
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HAreaStepArgs],
     ) -> GlyphRenderer[glyphs.HAreaStep]: ...
-
-    def hbar(self,
+    def hbar(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         y: NumberArg = ...,
         height: DistanceArg = ...,
         right: NumberArg = ...,
         left: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HBarArgs],
     ) -> GlyphRenderer[glyphs.HBar]: ...
-
-    def hspan(self,
+    def hspan(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         y: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HSpanArgs],
     ) -> GlyphRenderer[glyphs.HSpan]: ...
 
     # Glyph methods without x nor y parameters
 
-    def bezier(self,
+    def bezier(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x0: NumberArg = ...,
         y0: NumberArg = ...,
         x1: NumberArg = ...,
@@ -446,109 +406,108 @@ class BokehAccessor(Figure):
         cy0: NumberArg = ...,
         cx1: NumberArg = ...,
         cy1: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[BezierArgs],
     ) -> GlyphRenderer[glyphs.Bezier]: ...
-
-    def hstrip(self,
+    def hstrip(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         y0: NumberArg = ...,
         y1: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HStripArgs],
     ) -> GlyphRenderer[glyphs.HStrip]: ...
-
-    def hextile(self,
+    def hextile(
+        self,
         q: NumberArg = ...,
         r: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[HexTileArgs],
     ) -> GlyphRenderer[glyphs.HexTile]: ...
-
-    def multi_line(self,
+    def multi_line(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         xs: Number1dArg = ...,
         ys: Number1dArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[MultiLineArgs],
     ) -> GlyphRenderer[glyphs.MultiLine]: ...
-
-    def multipolygons(self,
+    def multipolygons(
+        self,
         xs: Number3dArg = ...,
         ys: Number3dArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[MultiPolygonsArgs],
     ) -> GlyphRenderer[glyphs.MultiPolygons]: ...
-
-    def patches(self,
+    def patches(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         xs: Number1dArg = ...,
         ys: Number1dArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[PatchesArgs],
     ) -> GlyphRenderer[glyphs.Patches]: ...
-
-    def quad(self,
+    def quad(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         left: NumberArg = ...,
         right: NumberArg = ...,
         top: NumberArg = ...,
         bottom: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[QuadArgs],
     ) -> GlyphRenderer[glyphs.Quad]: ...
-
-    def quadratic(self,
+    def quadratic(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x0: NumberArg = ...,
         y0: NumberArg = ...,
         x1: NumberArg = ...,
         y1: NumberArg = ...,
         cx: NumberArg = ...,
         cy: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[QuadraticArgs],
     ) -> GlyphRenderer[glyphs.Quadratic]: ...
-
-    def segment(self,
+    def segment(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x0: NumberArg = ...,
         y0: NumberArg = ...,
         x1: NumberArg = ...,
         y1: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[SegmentArgs],
     ) -> GlyphRenderer[glyphs.Segment]: ...
-
-    def vstrip(self,
+    def vstrip(
+        self,  # pyright: ignore[reportIncompatibleMethodOverride]
         x0: NumberArg = ...,
         x1: NumberArg = ...,
-        *, legend: bool = ...,
+        *,
+        auto_legend: bool = ...,
         **kwargs: Unpack[VStripArgs],
     ) -> GlyphRenderer[glyphs.VStrip]: ...
 
     # Stack methods
 
-    def harea_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.HArea]]: ...
-
-    def hbar_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.HBar]]: ...
-
-    def hline_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
-
-    def varea_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.VArea]]: ...
-
-    def vbar_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.VBar]]: ...
-
-    def vline_stack(self, stackers: Sequence[str] | None = ..., *, legend: bool = ...,
- **kwargs) -> list[GlyphRenderer[glyphs.Line]]: ...
-
-
-class PolarsBokehAccessor(BokehAccessor):
-
-    @property
-    def source(self) -> ColumnDataSource: ...
-
-
-class PandasBokehAccessor(BokehAccessor):
-
-    @property
-    def source(self) -> ColumnDataSource: ...
+    def harea_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.HArea]]: ...
+    def hbar_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.HBar]]: ...
+    def hline_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.Line]]: ...
+    def varea_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.VArea]]: ...
+    def vbar_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.VBar]]: ...
+    def vline_stack(
+        self, stackers: Sequence[str] | None = ..., *, auto_legend: bool = ..., **kwargs
+    ) -> list[GlyphRenderer[glyphs.Line]]: ...
